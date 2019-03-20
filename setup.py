@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(name='pylca',
-      version='0.2',
+      version='0.3',
       description='a package for the leaky competing accumulator',
       keywords='cognitive science',
       url='https://github.com/qihongl/pylca',
