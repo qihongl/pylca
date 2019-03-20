@@ -9,7 +9,7 @@ np.random.seed(0)
 
 """model params
 """
-n_units = 2
+n_units = 3
 # input weights
 w_input = 1
 w_cross = 0
@@ -21,7 +21,7 @@ competition = 2
 bias = -1
 gain = 1
 # bias term of the LCA
-offset = 0 * np.ones(n_units,)
+offset = 0
 # time step size
 dt = .4
 sqrtdt = dt ** 0.5
@@ -48,8 +48,8 @@ vals = lca.run(stimuli)
 
 f, ax = plt.subplots(1, 1, figsize=(8, 4))
 ax.plot(vals[1:, :])
-ax.set_title('The temporal dynamics of a 2 units LCA')
+ax.set_title(f'The temporal dynamics of a {n_units}-unit LCA')
 ax.set_xlabel('Time')
-ax.set_ylabel('LCA activity')
+ax.set_ylabel('Activity')
 f.tight_layout()
 sns.despine()

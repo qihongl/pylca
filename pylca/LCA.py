@@ -28,11 +28,12 @@ class LCA():
         self.competition = competition
         # the accumulator output transfermation
         self.transfer_func = sigmoid
-        # the input transformation weights
+        # the input-output weights
         self.w_input = w_input
         self.w_cross = w_cross
-        # the "shift" term at time t, like the bias term
+        # the "shift" terms at time t, like the bias term
         self.offset = offset
+        # the "intercept" and "slope" for the logistic function
         self.bias = bias
         self.gain = gain
         # noise on the accumulator
@@ -40,12 +41,11 @@ class LCA():
         self.noise_sd = noise_sd
         # time step size
         self.dt = dt
-        # calculate some network params
-        # the input weights
-        self.w_inp = make_weights(w_input, w_cross, n_units)
-        # the recurrent weights
-        self.w_self = make_weights(self_excit, -competition, n_units)
-        # init
+        # the input-output weights
+        self.W_io = make_weights(w_input, w_cross, n_units)
+        # the recurrent weights on the output units (i.e. the accumulators)
+        self.W_oo = make_weights(self_excit, -competition, n_units)
+        # check params
         self.check_config()
 
     def check_config(self):
@@ -82,7 +82,7 @@ class LCA():
             loc=self.noise_mu, scale=self.noise_sd, size=(
                 self.n_units, len(stimuli)))
         # precompute the transformed input, for all time points
-        inp = stimuli @ self.w_inp
+        inp = stimuli @ self.W_io
         # precompute offset
         offset = self.offset * np.ones(self.n_units,)
         # prealloc values for the accumulators over time
@@ -93,7 +93,7 @@ class LCA():
         for t in np.arange(1, T):
             # the LCA computation at time t
             V[:, t] = V[:, t-1] + offset + noise[:, t] * (self.dt**.5) + \
-                (inp[t, :] - self.leak * V[:, t-1] + self.w_self @ V[:, t-1])
+                (inp[t, :] - self.leak * V[:, t-1] + self.W_oo @ V[:, t-1])
             # transform
             V[:, t] = self.transfer_func(V[:, t], self.bias, self.gain)
         return V.T
