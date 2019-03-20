@@ -1,7 +1,9 @@
 # pylca
 a python implementation of the leaky, competing, accumulator (Usher, &amp; McClelland, 2001).
 
-here's an interactive demo: <a href="https://colab.research.google.com/github/qihongl/pylca/blob/master/example/demo_lca.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab" title="Open and Execute in Google Colaboratory"></a>
+here's an 
+<a href="https://github.com/qihongl/pylca/tree/master/example">example</a> 
+that you can play with on google colab: <a href="https://colab.research.google.com/github/qihongl/pylca/blob/master/example/demo_lca.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab" title="Open and Execute in Google Colaboratory"></a>
 
 to download, simply do `pip install pylca`
 
