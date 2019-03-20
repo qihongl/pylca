@@ -1,9 +1,10 @@
+import time
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from pylca.LCA import LCA
 
-sns.set(style='white', context='talk')
+sns.set(style='white', palette='colorblind', context='talk')
 np.random.seed(0)
 
 
@@ -16,7 +17,7 @@ w_cross = 0
 # decision param
 leak = 1
 self_excit = 1
-competition = 2
+competition = 1
 # logistic function params
 bias = -1
 gain = 1
@@ -24,7 +25,6 @@ gain = 1
 offset = 0
 # time step size
 dt = .4
-sqrtdt = dt ** 0.5
 # noise
 noise_mu = 0
 noise_sd = 0
@@ -44,11 +44,19 @@ lca = LCA(
     dt, noise_mu, noise_sd
 )
 # run LCA
+time_begin = time.time()
 vals = lca.run(stimuli)
+time_end = time.time()
+run_time = time_end - time_begin
 
-f, ax = plt.subplots(1, 1, figsize=(8, 4))
-ax.plot(vals[1:, :])
-ax.set_title(f'The temporal dynamics of a {n_units}-unit LCA')
+
+f, ax = plt.subplots(1, 1, figsize=(10, 5))
+ax.plot(vals)
+title_text = f"""
+The temporal dynamics of a {n_units}-unit LCA
+each unit is turned on sequentially
+"""
+ax.set_title(title_text)
 ax.set_xlabel('Time')
 ax.set_ylabel('Activity')
 f.tight_layout()

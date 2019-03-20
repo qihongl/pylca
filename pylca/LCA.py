@@ -88,18 +88,20 @@ class LCA():
         # prealloc values for the accumulators over time
         V = np.zeros((self.n_units, len(stimuli)))
         # loop over time
-        V[:, 0] = self.transfer_func(
+        init_val = self.transfer_func(
             np.zeros((self.n_units,)), self.bias, self.gain)
-        for t in np.arange(1, T):
+        for t in range(T):
             # the LCA computation at time t
-            V[:, t] = V[:, t-1] + offset + noise[:, t] * (self.dt**.5) + \
-                (inp[t, :] - self.leak * V[:, t-1] + self.W_oo @ V[:, t-1])
+            V_prev = init_val if t == 0 else V[:, t-1]
+            V[:, t] = V_prev + offset + noise[:, t] * (self.dt**.5) + \
+                (inp[t, :] - self.leak * V_prev + self.W_oo @ V_prev)
             # transform
             V[:, t] = self.transfer_func(V[:, t], self.bias, self.gain)
         return V.T
 
 
 # helper funcs
+
 def make_weights(w_diag_val, w_offdiag_val, n_nodes):
     """Get a connection weight matrix with "diag-offdial structure"
 
