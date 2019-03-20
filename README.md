@@ -2,6 +2,8 @@
 
 a lightweight python implementation of the leaky, competing, accumulator (Usher, &amp; McClelland, 2001). 
 
+<br>
+
 #### how to use
 
 here's an 
