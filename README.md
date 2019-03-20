@@ -12,7 +12,9 @@ that you can play with on google colab: <a href="https://colab.research.google.c
 
 #### install 
 
-simply do `pip install pylca`
+its on 
+<a href="https://pypi.org/project/pylca/">PyPI</a>, 
+so simply do `pip install pylca`
 
 
 <br>
