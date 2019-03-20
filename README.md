@@ -1,5 +1,5 @@
 # pylca
-a python implementation of the leaky, competing, accumulator (Usher, &amp; McClelland, 2001).
+a lightweight python implementation of the leaky, competing, accumulator (Usher, &amp; McClelland, 2001). 
 
 here's an 
 <a href="https://github.com/qihongl/pylca/tree/master/example">example</a> 
