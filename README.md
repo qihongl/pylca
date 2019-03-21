@@ -1,6 +1,6 @@
 # pylca
 
-a lightweight python implementation of the leaky, competing, accumulator, based on [1] and [2]
+a lightweight python implementation of the leaky, competing, accumulator, based on [1], [2] and [3]. The default is to behave like [2]. 
 
 <br>
 
@@ -24,3 +24,5 @@ so simply do `pip install pylca`
 - [1] Usher, M., & McClelland, J. L. (2001). The time course of perceptual choice: the leaky, competing accumulator model. Psychological Review, 108(3), 550–592. Retrieved from https://www.ncbi.nlm.nih.gov/pubmed/11488378
 
 - [2] Polyn, S. M., Norman, K. A., & Kahana, M. J. (2009). A context maintenance and retrieval model of organizational processes in free recall. Psychological Review, 116(1), 129–156. https://doi.org/10.1037/a0014420 
+
+- [3] <a href="https://github.com/PrincetonUniversity/PsyNeuLink">PsyNeuLink</a>: <a href="https://princetonuniversity.github.io/PsyNeuLink/LCAMechanism.html">LCAMechanism</a>
