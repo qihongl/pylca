@@ -1,11 +1,19 @@
-"""
-The leaky, competing, accumulator class
+""" A leaky competing accumulator.
+This can be viewed as a recurrrent neural network with lateral inhibition.
+Functionally, it is related to DDM, but it works for n-choices.
 
-Reference:
-Usher, M., & McClelland, J. L. (2001).
+Notes:
+The implementation is based on [1][2][3].
+TODO: Explain the differences here...
+
+References:
+[1] Usher, M., & McClelland, J. L. (2001).
 The time course of perceptual choice: the leaky, competing accumulator model.
 Psychological Review, 108(3), 550–592.
-Retrieved from https://www.ncbi.nlm.nih.gov/pubmed/11488378
+[2] Polyn, S. M., Norman, K. A., & Kahana, M. J. (2009).
+A context maintenance and retrieval model of organizational processes in free
+recall. Psychological Review, 116(1), 129–156.
+[3] PsyNeuLink: https://github.com/PrincetonUniversity/PsyNeuLink
 """
 import numpy as np
 
@@ -13,12 +21,8 @@ import numpy as np
 class LCA():
 
     def __init__(
-            self,
-            n_units,
-            leak, self_excit, competition,
-            w_input, w_cross,
-            offset, bias, gain,
-            dt, noise_mu, noise_sd
+        self, n_units, dt, leak, competition, self_excit=0,
+        w_input=1, w_cross=0, offset=0, noise_sd=0
     ):
         # number of accumulators
         self.n_units = n_units
@@ -26,18 +30,12 @@ class LCA():
         self.leak = leak
         self.self_excit = self_excit
         self.competition = competition
-        # the accumulator output transfermation
-        self.transfer_func = sigmoid
         # the input-output weights
         self.w_input = w_input
         self.w_cross = w_cross
-        # the "shift" terms at time t, like the bias term
+        # the "additive drift" terms at time t, like the bias
         self.offset = offset
-        # the "intercept" and "slope" for the logistic function
-        self.bias = bias
-        self.gain = gain
         # noise on the accumulator
-        self.noise_mu = noise_mu
         self.noise_sd = noise_sd
         # time step size
         self.dt = dt
@@ -50,23 +48,29 @@ class LCA():
 
     def check_config(self):
         assert 0 <= self.leak <= 1, f'Invalid leak = {self.leak}'
-        assert 0 <= self.competition, f'Invalid competition = {self.competition}'
-        assert 0 <= self.dt, f'Invalid dt = {self.dt}'
+        assert 0 <= self.competition,\
+            f'Invalid competition = {self.competition}'
+        assert 0 <= self.self_excit, \
+            f'Invalid self excitation = {self.self_excit}'
+        assert 0 <= self.dt <= 1, f'Invalid dt = {self.dt}'
         assert 0 <= self.noise_sd, f'Invalid noise sd = {self.noise_sd}'
 
-    def run(self, stimuli):
+    def run(self, stimuli, threshold=1):
         """Run LCA on some stimulus sequence
         the update formula:
-            value =   prev value
+            1. value =   prev value
                       + new_input
                       - leaked previous value
                       + previous value updated with recurrent weigths
                       + offset and noise
+            2. value <- output_bounding(value)
 
         Parameters
         ----------
         stimuli : 2d array
             input sequence, with shape: T x n_units
+        threshold: float
+            the upper bound of the neural activity
 
         Returns
         -------
@@ -79,37 +83,34 @@ class LCA():
         assert n_units_ == self.n_units
         # precompute noise, for all time points
         noise = np.random.normal(
-            loc=self.noise_mu, scale=self.noise_sd, size=(
-                self.n_units, len(stimuli)))
+            scale=self.noise_sd, size=(self.n_units, len(stimuli)))
         # precompute the transformed input, for all time points
         inp = stimuli @ self.W_io
         # precompute offset
         offset = self.offset * np.ones(self.n_units,)
         # prealloc values for the accumulators over time
         V = np.zeros((self.n_units, len(stimuli)))
-        # loop over time
-        init_val = self.transfer_func(
-            np.zeros((self.n_units,)), self.bias, self.gain)
+        # loop over n_cycles
+        init_val = np.zeros((self.n_units,))
         for t in range(T):
             # the LCA computation at time t
             V_prev = init_val if t == 0 else V[:, t-1]
             V[:, t] = V_prev + offset + noise[:, t] * (self.dt**.5) + \
-                (inp[t, :] - self.leak * V_prev + self.W_oo @ V_prev)
-            # transform
-            V[:, t] = self.transfer_func(V[:, t], self.bias, self.gain)
+                (inp[t, :] - self.leak * V_prev + self.W_oo @ V_prev) * self.dt
+            # output bounding
+            V[:, t][V[:, t] < 0] = 0
+            V[:, t][V[:, t] > threshold] = threshold
         return V.T
 
 
-# helper funcs
-
-def make_weights(w_diag_val, w_offdiag_val, n_nodes):
+def make_weights(diag_val, offdiag_val, n_nodes):
     """Get a connection weight matrix with "diag-offdial structure"
 
     Parameters
     ----------
-    w_diag_val : float
+    diag_val : float
         the value of the diag entries
-    w_offdiag_val : float
+    offdiag_val : float
         the value of the off-diag entries
     n_nodes : int
         the number of LCA nodes
@@ -120,12 +121,10 @@ def make_weights(w_diag_val, w_offdiag_val, n_nodes):
         the weight matrix with "diag-offdial structure"
 
     """
+    # set up the masks
     diag_mask = np.matrix(np.eye(n_nodes))
     offdiag_mask = np.ones((n_nodes, n_nodes))
     np.fill_diagonal(offdiag_mask, 0)
-    input_weights = diag_mask * w_diag_val + offdiag_mask * w_offdiag_val
-    return input_weights
-
-
-def sigmoid(x, bias=0, gain=1):
-    return 1 / (1 + np.exp(-gain * (x+bias)))
+    # compute the masks
+    weight_matrix = diag_mask * diag_val + offdiag_mask * offdiag_val
+    return weight_matrix
