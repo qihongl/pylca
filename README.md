@@ -2,7 +2,7 @@
 
 this is a lightweight python implementation of the leaky, competing, accumulator, based on [1], [2] and [3]. The default is to behave like [2]. 
 
-Note: 
+note: 
 - this implementation doesn't force the LCA process to terminate when the (activity threshold) criterion is met, which is different from [2]. though the user can truncate the activity post-hoc 
 - [2] assume self-excitation of the accumulators is zero. this implementation allows positive self-excitation. 
 - this implementation doesn't perform exponential weighted moving average of the inputs. [3] can do this. 
