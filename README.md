@@ -2,14 +2,6 @@
 
 this is a lightweight python implementation of the leaky, competing, accumulator, based on [1], [2] and [3]. The default is to behave like [2]. I need a really fast LCA in python for research purposes but I couldn't find it, so I wrote one. And I thought I'd shared it just in case other people need this. 
 
-note: 
-- this implementation doesn't force the LCA process to terminate when the (activity threshold) criterion is met, which is different from [2]. though the user can truncate the activity time course post-hoc 
-- [2] assumes self-excitation of the accumulators is zero. this implementation allows positive self-excitation. 
-- this implementation doesn't perform exponential weighted moving average of the inputs. [3] can do this. 
-- this implementation is linear, which is what [2] does. [3] supports non-linear transformation of the output units. 
-
-
-
 <br>
 
 #### how to use
@@ -25,7 +17,15 @@ its on
 so simply do `pip install pylca`
 
 
-<br>
+#### note 
+
+this implementation... 
+- ... allows any non-negative self-excitation. [1, 2] assume self-excitation of the accumulators is zero. 
+- ... doesn't terminate the LCA process when the (activity threshold) criterion is met, which is different from [2]. the user can truncate the activity time course post-hoc 
+- ... lower bound the output activity by 0 (i.e. ReLU), like [1, 2]. [3] doesn't do this. 
+- ... doesn't perform exponential weighted moving average of the inputs. [3] can do this. 
+- ... is linear, which is what [2] does. [3] supports non-linear transformations of the output. 
+
 
 #### references:  
 
