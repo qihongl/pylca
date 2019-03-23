@@ -1,4 +1,4 @@
-""" A leaky competing accumulator.
+"""A leaky competing accumulator.
 
 References:
 [1] Usher, M., & McClelland, J. L. (2001).
@@ -13,6 +13,8 @@ import numpy as np
 
 
 class LCA():
+    """The leaky competing accumulator class in numpy.
+    """
 
     def __init__(
         self, n_units, dt_t, leak, competition, self_excit=0,
@@ -51,9 +53,8 @@ class LCA():
         self.w_cross = w_cross
         self.offset = offset
         self.noise_sd = noise_sd
-        # the input weights
+        # the input / recurrent weights
         self.W_i = make_weights(w_input, w_cross, n_units)
-        # the recurrent weights on the output units (i.e. the accumulators)
         self.W_r = make_weights(self_excit, -competition, n_units)
         # check params
         self.check_model_config()
@@ -107,13 +108,16 @@ class LCA():
         return V
 
     def check_model_config(self):
-        assert 0 <= self.leak <= 1, f'Invalid leak = {self.leak}'
+        assert 0 <= self.leak, \
+            f'Invalid leak = {self.leak}'
         assert 0 <= self.competition,\
             f'Invalid competition = {self.competition}'
         assert 0 <= self.self_excit, \
             f'Invalid self excitation = {self.self_excit}'
-        assert 0 <= self.dt_t <= 1, f'Invalid dt_t = {self.dt_t}'
-        assert 0 <= self.noise_sd, f'Invalid noise sd = {self.noise_sd}'
+        assert 0 < self.dt_t, \
+            f'Invalid dt_t = {self.dt_t}'
+        assert 0 <= self.noise_sd, \
+            f'Invalid noise sd = {self.noise_sd}'
 
     def check_inputs(self, stimuli, threshold):
         _, n_units_ = np.shape(stimuli)
@@ -148,10 +152,7 @@ def make_weights(diag_val, offdiag_val, n_nodes):
         the weight matrix with "diag-offdial structure"
 
     """
-    # set up the masks
-    diag_mask = np.matrix(np.eye(n_nodes))
-    offdiag_mask = np.ones((n_nodes, n_nodes))
-    np.fill_diagonal(offdiag_mask, 0)
-    # compute the masks
+    diag_mask = np.eye(n_nodes)
+    offdiag_mask = np.ones((n_nodes, n_nodes)) - np.eye(n_nodes)
     weight_matrix = diag_mask * diag_val + offdiag_mask * offdiag_val
     return weight_matrix
