@@ -57,7 +57,7 @@ class LCA():
         self.W_i = make_weights(w_input, w_cross, n_units)
         self.W_r = make_weights(self_excit, -competition, n_units)
         # check params
-        self.check_model_config()
+        self._check_model_config()
 
     def run(self, stimuli, threshold=1):
         """Run LCA on some stimulus sequence
@@ -83,7 +83,7 @@ class LCA():
 
         """
         # input validation
-        self.check_inputs(stimuli, threshold)
+        self._check_inputs(stimuli, threshold)
         T, _ = np.shape(stimuli)
         # precompute noise for all time points
         noise = np.random.normal(scale=self.noise_sd, size=(T, self.n_units))
@@ -107,7 +107,7 @@ class LCA():
             V[t, :][V[t, :] > threshold] = threshold
         return V
 
-    def check_model_config(self):
+    def _check_model_config(self):
         assert 0 <= self.leak, \
             f'Invalid leak = {self.leak}'
         assert 0 <= self.competition,\
@@ -119,7 +119,7 @@ class LCA():
         assert 0 <= self.noise_sd, \
             f'Invalid noise sd = {self.noise_sd}'
 
-    def check_inputs(self, stimuli, threshold):
+    def _check_inputs(self, stimuli, threshold):
         _, n_units_ = np.shape(stimuli)
         assert n_units_ == self.n_units,\
             f'stimuli shape inconsistent with the network size = {self.leak}'
@@ -127,7 +127,7 @@ class LCA():
             f'Invalid threshold = {threshold}'
 
 
-def make_weights(diag_val, offdiag_val, n_nodes):
+def make_weights(diag_val, offdiag_val, n_units):
     """Get a connection weight matrix with "diag-offdial structure"
 
     e.g.
@@ -143,7 +143,7 @@ def make_weights(diag_val, offdiag_val, n_nodes):
         the value of the diag entries
     offdiag_val : float
         the value of the off-diag entries
-    n_nodes : int
+    n_units : int
         the number of LCA nodes
 
     Returns
@@ -152,7 +152,7 @@ def make_weights(diag_val, offdiag_val, n_nodes):
         the weight matrix with "diag-offdial structure"
 
     """
-    diag_mask = np.eye(n_nodes)
-    offdiag_mask = np.ones((n_nodes, n_nodes)) - np.eye(n_nodes)
+    diag_mask = np.eye(n_units)
+    offdiag_mask = np.ones((n_units, n_units)) - np.eye(n_units)
     weight_matrix = diag_mask * diag_val + offdiag_mask * offdiag_val
     return weight_matrix
