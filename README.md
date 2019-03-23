@@ -14,7 +14,7 @@ the script will generate the follwing plot, showing that more units got activate
 <img src="https://github.com/qihongl/pylca/blob/master/imgs/cmpt2.png" alt="cmpt">
 
 
-the effect of leak is straightforward: controlling for everything else, accumulators with bigger leak needs stronger input to get activated
+the effect of leak is straightforward: controlling for everything else, accumulators with bigger leak get less activated
 
 <img src="https://github.com/qihongl/pylca/blob/master/imgs/leak2.png" alt="leak">
 
