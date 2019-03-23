@@ -1,7 +1,6 @@
 # The leaky, competing, accumulator (LCA)
 
-this is a lightweight python implementation of the leaky, competing, accumulator, based on [1], [2] and [3]. The default is to behave like [2]. 
-
+this is a lightweight python implementation of the leaky, competing, accumulator, based on [1], [2] and [3]. 
 <br>
 
 #### how to use
@@ -9,6 +8,12 @@ this is a lightweight python implementation of the leaky, competing, accumulator
 here's an 
 <a href="https://github.com/qihongl/pylca/tree/master/example">example</a> 
 that you can play with on google colab: <a href="https://colab.research.google.com/github/qihongl/pylca/blob/master/example/demo_lca.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open in Colab" title="Open and Execute in Google Colaboratory"></a>
+
+the script will generate the follwing plot, showing that more units got activated -> more competition -> reduce the activity level of the strongest unit == increase uncertainty. this is a desired property emerged from the competition across all accumulators. 
+
+<img src="https://github.com/qihongl/pylca/blob/master/imgs/cmpt2.png" alt="cmpt">
+
+
 
 #### install 
 
