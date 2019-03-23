@@ -1,6 +1,6 @@
 # The leaky, competing, accumulator (LCA)
 
-this is a lightweight python implementation of the leaky, competing, accumulator, based on [1], [2] and [3]. The default is to behave like [2]. I need a really fast LCA in python for research purposes but I couldn't find it, so I wrote one. And I thought I'd shared it just in case other people need this. 
+this is a lightweight python implementation of the leaky, competing, accumulator, based on [1], [2] and [3]. The default is to behave like [2]. 
 
 <br>
 
