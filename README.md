@@ -1,7 +1,6 @@
 # The leaky, competing, accumulator (LCA)
 
-this is a lightweight python implementation of the leaky, competing, accumulator, based on [1], [2] and [3]. The default is to behave like [2]. 
-
+this is a lightweight python implementation of the leaky, competing, accumulator, based on [1], [2] and [3]. 
 <br>
 
 #### how to use
