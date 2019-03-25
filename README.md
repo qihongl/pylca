@@ -29,7 +29,7 @@ so simply do `pip install pylca`
 #### note 
 
 this implementation... 
-- ... allows any non-negative self-excitation. [1, 2] assume self-excitation of the accumulators is zero. 
+- ... allows any non-negative self-excitation. [2] assumes the strength of self-excitation (for the accumulators) is zero. 
 - ... doesn't terminate the LCA process when the (activity threshold) criterion is met, which is different from [2]. the user can truncate the activity time course post-hoc. 
 - ... lower bound the output activity by 0 (i.e. ReLU), like [1, 2]. [3] can do other non-linear transformations
 - ... doesn't perform exponential weighted moving average of the inputs. [3] can do this. 
